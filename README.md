@@ -10,3 +10,19 @@ Currently, two official plugins are available:
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+
+
+Project: MindMapper
+✅ Auth with JWT (email/password)
+✅ bcrypt password hashing
+✅ MongoDB (users stored)
+✅ Protected /profile route
+✅ Folder structure:
+  - middleware/auth.js
+  - models/User.js, Mindmap.js
+  - routes/auth.routes.js, mindmap.routes.js
+✅ .env includes JWT_SECRET=yashrs2025secret!
+✅ Tested on Thunder Client
+Frontend deployed on Vercel (via GitHub)
+
