@@ -7,6 +7,7 @@ import {
 import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
 
+import Login from "./pages/Login";
 import Dashboard from './pages/Dashboard';
 import AddEntry from './pages/AddEntry';
 import Analytics from './pages/Analytics';
