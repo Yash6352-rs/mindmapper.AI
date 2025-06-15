@@ -20,6 +20,7 @@ function App() {
         <div className="flex-1 bg-gray-100 p-6 overflow-y-auto flex flex-col">
           <div className="flex-grow">
             <Routes>
+              <Route path="/login" element={<Login />} />
               <Route path="/" element={<Dashboard />} />
               <Route path="/add" element={<AddEntry />} />
               <Route path="/analytics" element={<Analytics />} />

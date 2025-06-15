@@ -1,35 +1,72 @@
 const express = require("express");
 const router = express.Router();
 const Mindmap = require("../models/Mindmap");
+const authenticateToken = require("../middleware/auth");
 
-// Create mindmap
-router.post("/", async (req, res) => {
+// CREATE a new mindmap
+router.post("/", authenticateToken, async (req, res) => {
+  const { title, nodes } = req.body;
+
   try {
-    const newMindmap = new Mindmap(req.body);
-    await newMindmap.save();
-    res.status(201).json(newMindmap);
+    const newMap = new Mindmap({
+      title,
+      nodes,
+      userId: req.user._id, // ✅ matches schema
+    });
+
+    await newMap.save();
+    res.status(201).json({ message: "Mindmap created", mindmap: newMap });
   } catch (err) {
-    res.status(400).json({ error: "Create failed", details: err });
+    res.status(500).json({ error: "Failed to create mindmap", details: err.message });
   }
 });
 
-// Get all mindmaps by user
-router.get("/:userId", async (req, res) => {
+// GET all mindmaps for logged-in user
+router.get("/", authenticateToken, async (req, res) => {
   try {
-    const maps = await Mindmap.find({ userId: req.params.userId });
-    res.json(maps);
+    const mindmaps = await Mindmap.find({ userId: req.user._id });
+    res.json(mindmaps);
   } catch (err) {
-    res.status(500).json({ error: "Fetch failed" });
+    res.status(500).json({ error: "Failed to fetch mindmaps", details: err.message });
   }
 });
 
-// Delete a mindmap
-router.delete("/:id", async (req, res) => {
+// UPDATE a mindmap
+router.put("/:id", authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  const { title, nodes } = req.body;
+
   try {
-    await Mindmap.findByIdAndDelete(req.params.id);
-    res.json({ message: "Deleted" });
+    const updated = await Mindmap.findOneAndUpdate(
+      { _id: id, userId: req.user._id },
+      { title, nodes },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ error: "Mindmap not found" });
+    }
+
+    res.json({ message: "Mindmap updated", mindmap: updated });
   } catch (err) {
-    res.status(500).json({ error: "Delete failed" });
+    res.status(500).json({ error: "Update failed", details: err.message });
+  }
+});
+
+// DELETE a mindmap
+router.delete("/:id", authenticateToken, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deleted = await Mindmap.findOneAndDelete({ _id: id, userId: req.user._id });
+
+    if (!deleted) {
+      return res.status(404).json({ error: "Mindmap not found" });
+    }
+
+    res.json({ message: "Mindmap deleted" });
+  } catch (err) {
+    res.status(500).json({ error: "Delete failed", details: err.message });
   }
 });
 
