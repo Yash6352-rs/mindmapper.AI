@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getEntries } from '../utils/entries';
+import API from '../utils/api'; // your axios with auth token
 import { Pie, Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -15,20 +15,33 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarEle
 
 export default function Analytics() {
   const [entries, setEntries] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setEntries(getEntries());
+    const fetchMindmaps = async () => {
+      try {
+        const res = await API.get('/mindmaps'); // ✅ calls user-specific API
+        setEntries(res.data);
+      } catch (err) {
+        console.error('Error fetching mindmaps:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMindmaps();
   }, []);
 
   const moodCounts = {};
   const dayCounts = {};
 
   entries.forEach((entry) => {
-    // Mood count
-    moodCounts[entry.mood] = (moodCounts[entry.mood] || 0) + 1;
+    // ✅ Mood count
+    const mood = entry.mood || 'Unknown';
+    moodCounts[mood] = (moodCounts[mood] || 0) + 1;
 
-    // Day count
-    const day = new Date(entry.date).toLocaleDateString();
+    // ✅ Day count (uses createdAt)
+    const day = new Date(entry.createdAt || entry._id?.toString().substring(0, 8) * 1000).toLocaleDateString();
     dayCounts[day] = (dayCounts[day] || 0) + 1;
   });
 
@@ -64,7 +77,9 @@ export default function Analytics() {
     <div>
       <h1 className="text-2xl font-bold mb-4">📊 Analytics</h1>
 
-      {entries.length === 0 ? (
+      {loading ? (
+        <p>Loading analytics...</p>
+      ) : entries.length === 0 ? (
         <p>No data to show yet. Add entries to see analytics.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

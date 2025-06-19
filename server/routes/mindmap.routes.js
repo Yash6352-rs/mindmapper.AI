@@ -5,19 +5,19 @@ const authenticateToken = require("../middleware/auth");
 
 // CREATE a new mindmap
 router.post("/", authenticateToken, async (req, res) => {
-  const { title, nodes } = req.body;
+  const { title, nodes = [], thought = "", mood = "" } = req.body;
+  if (!title) return res.status(400).json({ error: "Title is required" });
 
   try {
     const newMap = new Mindmap({
-      title,
-      nodes,
-      userId: req.user._id, // ✅ matches schema
+      title, nodes, thought, mood,
+      userId: req.user._id
     });
-
     await newMap.save();
-    res.status(201).json({ message: "Mindmap created", mindmap: newMap });
+    res.status(201).json(newMap);
   } catch (err) {
-    res.status(500).json({ error: "Failed to create mindmap", details: err.message });
+    console.error("Error saving:", err);
+    res.status(500).json({ error: "Failed to save mindmap", details: err.message });
   }
 });
 
@@ -34,12 +34,12 @@ router.get("/", authenticateToken, async (req, res) => {
 // UPDATE a mindmap
 router.put("/:id", authenticateToken, async (req, res) => {
   const { id } = req.params;
-  const { title, nodes } = req.body;
+  const { title, nodes, thought, mood } = req.body;
 
   try {
     const updated = await Mindmap.findOneAndUpdate(
       { _id: id, userId: req.user._id },
-      { title, nodes },
+      { title, nodes, thought, mood },
       { new: true }
     );
 

@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from '../utils/api';
 
 export default function Dashboard() {
   const [mindmaps, setMindmaps] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState('');
-  const [editNodes, setEditNodes] = useState('');
+  const [editThought, setEditThought] = useState('');
+  const [editMood, setEditMood] = useState('Happy');
+  const navigate = useNavigate();
 
   const fetchMindmaps = async () => {
     const token = localStorage.getItem('token');
+    if (!token) return navigate('/login');
     try {
       const response = await axios.get('/mindmaps', {
         headers: { Authorization: `Bearer ${token}` },
@@ -38,14 +42,16 @@ export default function Dashboard() {
 
   const startEditing = (mindmap) => {
     setEditingId(mindmap._id);
-    setEditTitle(mindmap.title);
-    setEditNodes(JSON.stringify(mindmap.nodes, null, 2));
+    setEditTitle(mindmap.title || '');
+    setEditThought(mindmap.thought || '');
+    setEditMood(mindmap.mood || 'Happy');
   };
 
   const cancelEditing = () => {
     setEditingId(null);
     setEditTitle('');
-    setEditNodes('');
+    setEditThought('');
+    setEditMood('Happy');
   };
 
   const handleUpdate = async () => {
@@ -55,16 +61,15 @@ export default function Dashboard() {
         `/mindmaps/${editingId}`,
         {
           title: editTitle,
-          nodes: JSON.parse(editNodes),
+          thought: editThought,
+          mood: editMood,
         },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
       setMindmaps((prev) =>
-        prev.map((map) =>
-          map._id === editingId ? updated.data.mindmap : map
-        )
+        prev.map((map) => (map._id === editingId ? updated.data.mindmap : map))
       );
       alert('Mindmap updated ✅');
       cancelEditing();
@@ -93,11 +98,22 @@ export default function Dashboard() {
                   />
                   <textarea
                     className="w-full p-2 border rounded mb-2"
-                    rows={4}
-                    value={editNodes}
-                    onChange={(e) => setEditNodes(e.target.value)}
-                    placeholder='Example: [{"id":"1","label":"Root"}]'
+                    rows={3}
+                    value={editThought}
+                    onChange={(e) => setEditThought(e.target.value)}
+                    placeholder="Thought"
                   />
+                  <select
+                    value={editMood}
+                    onChange={(e) => setEditMood(e.target.value)}
+                    className="w-full p-2 border rounded mb-2"
+                  >
+                    <option>Happy</option>
+                    <option>Sad</option>
+                    <option>Excited</option>
+                    <option>Angry</option>
+                    <option>Neutral</option>
+                  </select>
                   <button
                     className="bg-green-600 text-white px-3 py-1 rounded mr-2"
                     onClick={handleUpdate}
@@ -118,9 +134,9 @@ export default function Dashboard() {
                     <span>ID: {mindmap._id}</span>
                   </div>
                   <h2 className="text-xl font-semibold">{mindmap.title}</h2>
-                  <pre className="text-sm bg-gray-100 p-2 rounded mt-2">
-                    {JSON.stringify(mindmap.nodes, null, 2)}
-                  </pre>
+                  <p className="mt-1 text-gray-700">💬 Thought: {mindmap.thought}</p>
+                  <p className="text-gray-700">🎭 Mood: {mindmap.mood}</p>
+
                   <div className="mt-3">
                     <button
                       className="bg-blue-600 text-white px-3 py-1 rounded mr-2"

@@ -12,9 +12,14 @@ app.use(express.json());
 // Routes
 const authRoutes = require("./routes/auth.routes");
 const mindmapRoutes = require("./routes/mindmap.routes");
+const userRoutes = require("./routes/user")
+const aiRoutes = require("./routes/ai-routes");
+
 
 app.use("/api/auth", authRoutes);
 app.use("/api/mindmaps", mindmapRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/ai", aiRoutes);
 
 // Root test route
 app.get("/", (req, res) => {
