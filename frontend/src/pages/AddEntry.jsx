@@ -19,7 +19,7 @@ export default function AddEntry() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await API.post('/mindmaps', {
+      await API.post('/api/mindmaps', {
         title,
         thought,
         mood,
@@ -44,7 +44,7 @@ export default function AddEntry() {
     setLoadingSuggestion(true);
     setSuggestion('');
     try {
-      const res = await API.post('/ai/suggest', {
+      const res = await API.post('/api/ai/suggest', {
         thought: thought || title,
       });
       setSuggestion(res.data.suggestion);

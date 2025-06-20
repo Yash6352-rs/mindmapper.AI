@@ -14,7 +14,7 @@ export default function Dashboard() {
     const token = localStorage.getItem('token');
     if (!token) return navigate('/login');
     try {
-      const response = await axios.get('/mindmaps', {
+      const response = await axios.get('/api/mindmaps', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMindmaps(response.data);
@@ -30,7 +30,7 @@ export default function Dashboard() {
   const handleDelete = async (id) => {
     const token = localStorage.getItem('token');
     try {
-      await axios.delete(`/mindmaps/${id}`, {
+      await axios.delete(`/api/mindmaps/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMindmaps((prev) => prev.filter((m) => m._id !== id));
@@ -58,7 +58,7 @@ export default function Dashboard() {
     const token = localStorage.getItem('token');
     try {
       const updated = await axios.put(
-        `/mindmaps/${editingId}`,
+        `/api/mindmaps/${editingId}`,
         {
           title: editTitle,
           thought: editThought,

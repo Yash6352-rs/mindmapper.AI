@@ -20,7 +20,7 @@ export default function Analytics() {
   useEffect(() => {
     const fetchMindmaps = async () => {
       try {
-        const res = await API.get('/mindmaps'); // ✅ calls user-specific API
+        const res = await API.get('/api/mindmaps'); // ✅ calls user-specific API
         setEntries(res.data);
       } catch (err) {
         console.error('Error fetching mindmaps:', err);

@@ -6,17 +6,16 @@ require("dotenv").config();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
 
 // Routes
 const authRoutes = require("./routes/auth.routes");
 const mindmapRoutes = require("./routes/mindmap.routes");
-const userRoutes = require("./routes/user")
+const userRoutes = require("./routes/user");
 const aiRoutes = require("./routes/ai-routes");
 
-
-app.use("/api/auth", authRoutes);
+app.use("/api", authRoutes);
 app.use("/api/mindmaps", mindmapRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/ai", aiRoutes);

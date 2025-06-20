@@ -1,3 +1,4 @@
+// src/pages/Signup.jsx
 import React, { useState } from "react";
 import API from "../utils/api";
 import { useNavigate, Link } from "react-router-dom";
@@ -14,7 +15,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await API.post("/auth/register", form);
+      await API.post("/api/register", form);  // ✅ Matches backend
       alert("✅ Signup successful! Please login.");
       navigate("/login");
     } catch (err) {
@@ -24,13 +25,11 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 px-4">
-      {/* Page Title */}
       <div className="mb-10 text-center">
         <h1 className="text-4xl font-bold text-blue-700">🧠 MindMapper</h1>
         <p className="text-gray-600 mt-2 text-lg">Join us and organize your mind better!</p>
       </div>
 
-      {/* Signup Form Box */}
       <div className="w-full max-w-2xl bg-white p-12 rounded-2xl shadow-xl">
         <h2 className="text-3xl font-bold text-center mb-8 text-blue-600">📝 Create an Account</h2>
 

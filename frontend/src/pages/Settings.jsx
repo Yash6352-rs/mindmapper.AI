@@ -9,7 +9,7 @@ export default function Settings() {
   const handleExportData = async () => {
     setDownloading(true);
     try {
-      const res = await API.get('/mindmaps'); // Get user-specific mindmaps
+      const res = await API.get('/api/mindmaps'); // Get user-specific mindmaps
       const blob = new Blob([JSON.stringify(res.data, null, 2)], { type: 'application/json' });
       saveAs(blob, 'my_mindmaps.json');
     } catch (err) {
@@ -25,7 +25,7 @@ export default function Settings() {
     if (!window.confirm("⚠️ Are you sure you want to delete your account permanently?")) return;
 
     try {
-      const res = await API.delete("/users/me");
+      const res = await API.delete("/api/users/me");
       alert(res.data.message);
       localStorage.removeItem("token");
       window.location.href = "/login";

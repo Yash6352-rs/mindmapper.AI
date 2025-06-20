@@ -6,7 +6,7 @@ const router = express.Router();
 const User = require("../models/User");
 const authenticateToken = require("../middleware/auth");
 
-// ✅ GET: Protected Profile Route
+// ✅ GET: Profile
 router.get("/profile", authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.userId).select("-password");
@@ -17,7 +17,7 @@ router.get("/profile", authenticateToken, async (req, res) => {
   }
 });
 
-// ✅ POST: Register Route
+// ✅ FIXED: Register (removed /api)
 router.post("/register", async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -42,7 +42,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// ✅ POST: Login Route
+// ✅ Login
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
