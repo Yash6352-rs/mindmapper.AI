@@ -112,6 +112,7 @@ export default function Dashboard() {
                     <option>Sad</option>
                     <option>Excited</option>
                     <option>Angry</option>
+                    <option>Anxious</option>
                     <option>Neutral</option>
                   </select>
                   <button
